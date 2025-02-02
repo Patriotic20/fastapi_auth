@@ -7,9 +7,9 @@ class Teacher(Base):
     __tablename__ = "teachers"
     
     id = Column(Integer, primary_key=True , index=True)
-    user_id = Column(Integer, ForeignKey('users.id'), unique=True, nullable=False)
-    last_name = Column(String , nullable=False)
-    first_name = Column(String , nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    last_name = Column(String , nullable=True)
+    first_name = Column(String , nullable=True)
     
     
     user = relationship("User", back_populates="teacher")

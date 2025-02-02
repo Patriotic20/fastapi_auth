@@ -22,5 +22,7 @@ def login(response : Response, form_data: OAuth2PasswordRequestForm = Depends() 
     
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="lax", secure=True)
     
+    
+    
     return{"access_token": access_token, "token_type": "bearer"}
 

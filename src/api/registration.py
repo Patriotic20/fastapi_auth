@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from src.schemas.user import RegisterRequest
 from sqlalchemy.orm import Session
 from src.base.db import get_db
-from src.model.user import User, UserRole
+from src.model.user import User, UserRole 
+from src.model import Student , Teacher
 from src.auth.utils import hash_password
 
 router = APIRouter()
@@ -29,8 +30,18 @@ def register(user_data: RegisterRequest, db: Session = Depends(get_db)):
     role = UserRole.student.value
     )
 
+    if new_user.role == UserRole.student.value:
+        new_student = Student(user_id = new_user.id)
+        db.add(new_student)
+    if new_user.role == UserRole.teacher.value:
+        new_teacher = Teacher(user_id = new_user.id)
+        db.add(new_teacher)
+    
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    
+
+        
 
     return {"message": "User registered successfully"}
