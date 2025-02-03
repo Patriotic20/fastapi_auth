@@ -7,7 +7,7 @@ class Student(Base):
     
 
     id = Column(Integer , primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     last_name = Column(String , nullable=True)
     first_name = Column(String , nullable=True)
     
