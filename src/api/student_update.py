@@ -22,7 +22,7 @@ def update_question(
     if not student_info:
             raise HTTPException(
                 status_code=404 , 
-                detail="Question not found"
+                detail="Student not found"
             )
         
     update_data = student_item.dict(exclude_unset=True)

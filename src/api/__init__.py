@@ -6,6 +6,7 @@ from .logout import router as logout
 from .registration import router as registration
 from .delete import router as delete
 from .student_update import router as studnet_update
+from .teacher_update import router as teacher_update
 
 router = APIRouter()
 
@@ -16,5 +17,6 @@ router.include_router(refresh)
 router.include_router(registration)
 router.include_router(delete)
 router.include_router(studnet_update)
+router.include_router(teacher_update)
 
 
