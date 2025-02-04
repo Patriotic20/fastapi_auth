@@ -18,23 +18,19 @@ def register(user_data: RegisterRequest, db: Session = Depends(get_db)):
             detail="Username already taken"
         )
 
-    # Create new user
     new_user = User(
         username=user_data.username,
         hashed_password=hash_password(user_data.password),
         disabled=False,
-        role=user_data.role.value # or determine role dynamically
+        role=user_data.role.value 
     )
     
 
         
     db.add(new_user)
-    db.commit()  # Commit to get the assigned ID
-    db.refresh(new_user)  # Refresh to get the new ID
+    db.commit() 
+    db.refresh(new_user)
 
-    # Now the user ID is available, we can create Student or Teacher
-    
-    print("FFFF", new_user.role, new_user.id)
 
     new_profile = None
     
@@ -43,7 +39,7 @@ def register(user_data: RegisterRequest, db: Session = Depends(get_db)):
     elif new_user.role.value == UserRole.teacher.value:
         new_profile = Teacher(user_id=new_user.id)
         
-      # Final commit to save Student/Teacher
+
     db.add(new_profile)
     db.commit()
     db.refresh(new_profile)

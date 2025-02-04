@@ -34,10 +34,12 @@ def create_refresh_token(data: dict, expires_delta: timedelta):
     return jwt.encode(to_encode , settings.REFRESH_SECRET_KEY , algorithm=settings.ALGORITHM)
     
 def verify_token(token: str , secret_key: str):
+    print('HH', token)
     try:
         payload = jwt.decode(token , secret_key , algorithms=[settings.ALGORITHM])
         return payload
-    except JWTError:
+    except JWTError as e:
+        print('ERR', e)
         return None
     
 def get_user(db: Session, username : str):
@@ -50,11 +52,9 @@ def authenticate_user(db: Session, username: str , password: str):
     return user
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    if not token or not token.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid token format")
-    
-    token = token.replace("Bearer ", "")
     payload = verify_token(token, settings.SECRET_KEY)
+    
+    print('gg', payload)
 
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid token")

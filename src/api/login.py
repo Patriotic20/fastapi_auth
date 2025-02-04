@@ -1,11 +1,12 @@
 from fastapi import APIRouter , Depends , Response , Request , HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
-from src.model.user import User
+from src.model import User , Teacher , Student
 from src.base.db import get_db
-from src.auth.utils import authenticate_user , create_access_token, create_refresh_token, verify_token , get_user
+from src.auth.utils import authenticate_user , create_access_token, create_refresh_token, get_current_user
 from datetime import timedelta
 from src.base.config import settings
+
 
 router = APIRouter()
 
@@ -23,6 +24,26 @@ def login(response : Response, form_data: OAuth2PasswordRequestForm = Depends() 
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="lax", secure=True)
     
     
+    user_info = get_current_user(access_token, db)
+    if not user_info:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User info not found")
     
-    return{"access_token": access_token, "token_type": "bearer"}
+    if user_info.role.value == "student":
+        student_info = db.query(Student).filter(Student.user_id == user_info.id).first()
+        if not student_info:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Student not found"
+            )
+        return {"first_name": student_info.first_name, "last_name": student_info.last_name}
 
+    elif user_info.role.value == "teacher":
+        teacher_info = db.query(Teacher).filter(Teacher.user_id == user_info.id).first()
+        if not teacher_info:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Teacher not found"
+            )
+        return {"access_token": access_token,"token_type":"bearer"}
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role")

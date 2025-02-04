@@ -2,32 +2,32 @@ from fastapi import APIRouter , Depends , HTTPException
 from sqlalchemy.orm import Session 
 from src.auth.utils import get_current_user
 from src.base.db import get_db
-from src.schemas.user import StudentUpdate 
-from src.model import Student , User
-
+from src.schemas.user import TeacherUpdate
+from src.model import Student , User, Teacher
+from typing import Optional
 
 
 router = APIRouter()
 
 
-@router.put("/update-student")
+@router.put("/update-teacher")
 def update_question(
-    student_item: StudentUpdate,
+    teacher_item: TeacherUpdate,
     user_info: User = Depends(get_current_user),
     db : Session = Depends(get_db)
 ):
     
 
-    student_info = db.query(Student).filter(Student.user_id == user_info.id).first()
-    if not student_info:
+    teacher_info = db.query(Teacher).filter(Teacher.user_id == user_info.id).first()
+    if not teacher_info:
             raise HTTPException(
                 status_code=404 , 
                 detail="Question not found"
             )
         
-    update_data = student_item.dict(exclude_unset=True)
+    update_data = teacher_item.dict(exclude_unset=True)
     for key , value in update_data.items():
-        setattr(student_info , key, value)
+        setattr(teacher_info , key, value)
     db.commit()
-    db.refresh(student_info)
-    return student_info
+    db.refresh(teacher_info)
+    return teacher_info
