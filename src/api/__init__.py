@@ -7,6 +7,7 @@ from .registration import router as registration
 from .delete import router as delete
 from .student_update import router as studnet_update
 from .teacher_update import router as teacher_update
+from .question_bank import router as question_bank
 
 router = APIRouter()
 
@@ -18,5 +19,6 @@ router.include_router(registration)
 router.include_router(delete)
 router.include_router(studnet_update)
 router.include_router(teacher_update)
+router.include_router(question_bank)
 
 

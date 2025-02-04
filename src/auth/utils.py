@@ -54,7 +54,6 @@ def authenticate_user(db: Session, username: str , password: str):
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     payload = verify_token(token, settings.SECRET_KEY)
     
-    print('gg', payload)
 
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -69,6 +68,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
     return user
 
+def get_user_id(db : Session = Depends(get_db)):
+    user_id = get_current_user()
+    
 
 def get_user_role(required_role: UserRole):
     def role_dependency(current_user: User = Depends(get_current_user)):
